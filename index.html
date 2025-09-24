@@ -755,26 +755,17 @@
     <p style="text-align: center; font-size: 1.3em; font-weight: 600; color: var(--primary); margin: 1.5rem 0;"><strong>Total: $<span id="modalTotal">0</span></strong></p>
 
     <div class="delivery-options">
-     <h3>Opciones de Entrega</h3>
-<label>
-  <input type="radio" name="deliveryOption" value="retiro" checked onchange="toggleAddress()"> 🏪 Retiro por local
-</label>
-<label>
-  <input type="radio" name="deliveryOption" value="envio" onchange="toggleAddress()"> 🚚 Envío a domicilio
-</label>
-
-<div style="margin-top:10px;">
-  <!-- Nombre siempre visible -->
-  <input type="text" id="fullName" placeholder="Ingresa tu Nombre Completo"><br>
-</div>
-
-<!-- Campos solo para envío -->
-<div id="addressField" style="display:none; margin-top:10px;">
-  <input type="text" id="fullAddress" placeholder="Ingresa tu Dirección Completa"><br>
-  <input type="text" id="betweenStreets" placeholder="Ingresa Entre Calles"><br>
-  <input type="text" id="phoneNumber" placeholder="Ingresa tu Número de Teléfono"><br>
-  <input type="text" id="paymentMethod" placeholder="Ingresa el Método de Pago"><br>
-</div>
+      <h3>Opciones de Entrega</h3>
+      <label><input type="radio" name="deliveryOption" value="retiro" checked onchange="toggleAddress()"> 🏪 Retiro por local</label>
+      <label><input type="radio" name="deliveryOption" value="envio" onchange="toggleAddress()"> 🚚 Envío a domicilio</label>
+      <div id="addressField" style="display:none;">
+        <input type="text" id="deliveryAddress" placeholder="Ingresa tu Nombre Complero">
+        <input type="text" id="deliveryAddress" placeholder="Ingresa tu Dirección Completa">
+        <input type="text" id="deliveryAddress" placeholder="Ingresa Entre Calles">
+        <input type="text" id="deliveryAddress" placeholder="Ingresa tu Numero De Telefono">
+        <input type="text" id="deliveryAddress" placeholder="Ingresa el Metodo de Pago">
+      </div>
+    </div>
 
     <button class="clear-cart-button" onclick="clearCart()">🗑️ Vaciar carrito</button>
     <button class="whatsapp-button" onclick="sendWhatsApp()">📱 Confirmar pedido</button>
@@ -962,7 +953,7 @@
     document.getElementById('addressField').style.display = deliveryOption === 'envio' ? 'block' : 'none';
   }
 
-// WhatsApp
+  // WhatsApp
   function sendWhatsApp() {
     if (cart.length === 0) {
       alert('Tu carrito está vacío.');
@@ -970,37 +961,22 @@
     }
 
     const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
-
-    const fullName = document.getElementById('fullName').value.trim();
-    if (!fullName) {
-      alert('Por favor ingresa tu nombre completo.');
-      return;
-    }
-
-    let extraData = `\n👤 Nombre: ${fullName}`;
-
+    let addressText = '';
     if (deliveryOption === 'envio') {
-      const fullAddress = document.getElementById('fullAddress').value.trim();
-      const betweenStreets = document.getElementById('betweenStreets').value.trim();
-      const phoneNumber = document.getElementById('phoneNumber').value.trim();
-      const paymentMethod = document.getElementById('paymentMethod').value.trim();
-
-      if (!fullAddress || !phoneNumber || !paymentMethod) {
-        alert('Por favor completa todos los datos de entrega requeridos.');
+      const address = document.getElementById('deliveryAddress').value.trim();
+      if (!address) {
+        alert('Ingresa tu dirección de entrega.');
         return;
       }
-
-      extraData += `\n📍 Dirección: ${fullAddress}\n↔️ Entre calles: ${betweenStreets}\n📞 Teléfono: ${phoneNumber}\n💳 Método de pago: ${paymentMethod}`;
+      addressText = `\nDirección: ${address}`;
     }
 
-    let message = '🛒 Hola! Quiero hacer el siguiente pedido:\n\n';
+    let message = 'Hola! Quiero hacer el siguiente pedido:\n\n';
     cart.forEach(item => {
       message += `${item.quantity} x ${item.name} - $${item.price * item.quantity}\n`;
     });
-
-    message += `\n💰 Total: $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}`;
-    message += `\n🚚 Opción: ${deliveryOption === 'retiro' ? 'Retiro por local' : 'Envío a domicilio'}`;
-    message += `\n\n📋 Datos:\n${extraData}`;
+    message += `\nTotal: $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}`;
+    message += `\nOpción: ${deliveryOption === 'retiro' ? 'Retiro por local' : 'Envío a domicilio'}${addressText}`;
 
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/5493541294944?text=${encodedMessage}`, '_blank');
