@@ -755,13 +755,39 @@
     <p style="text-align: center; font-size: 1.3em; font-weight: 600; color: var(--primary); margin: 1.5rem 0;"><strong>Total: $<span id="modalTotal">0</span></strong></p>
 
     <div class="delivery-options">
-      <h3>Opciones de Entrega</h3>
-      <label><input type="radio" name="deliveryOption" value="retiro" checked onchange="toggleAddress()"> 🏪 Retiro por local</label>
-      <label><input type="radio" name="deliveryOption" value="envio" onchange="toggleAddress()"> 🚚 Envío a domicilio</label>
-      <div id="addressField" style="display:none;">
-        <input type="text" id="deliveryAddress" placeholder="Ingresa tu dirección completa">
-      </div>
-    </div>
+  <h3>Opciones de Entrega</h3>
+
+  <!-- Retiro por local -->
+  <label>
+    <input type="radio" name="deliveryOption" value="retiro" onchange="toggleAddress()"> 🏪 Retiro por local
+  </label>
+  <div id="retiroField" style="display:none;">
+    <input type="text" placeholder="Ingresa tu Nombre Completo">
+  </div>
+
+  <!-- Envío a domicilio -->
+  <label>
+    <input type="radio" name="deliveryOption" value="envio" onchange="toggleAddress()"> 🚚 Envío a domicilio
+  </label>
+  <div id="addressField" style="display:none;">
+    <input type="text" placeholder="Ingresa tu Nombre Completo">
+    <input type="text" placeholder="Ingresa tu Dirección Completa">
+    <input type="text" placeholder="Ingresa Entre Calles">
+    <input type="text" placeholder="Ingresa tu Número de Teléfono">
+    <input type="text" placeholder="Ingresa la Forma de Pago">
+  </div>
+</div>
+
+<script>
+function toggleAddress() {
+  const retiroField = document.getElementById("retiroField");
+  const addressField = document.getElementById("addressField");
+  const selected = document.querySelector('input[name="deliveryOption"]:checked').value;
+
+  retiroField.style.display = selected === "retiro" ? "block" : "none";
+  addressField.style.display = selected === "envio" ? "block" : "none";
+}
+</script>
 
     <button class="clear-cart-button" onclick="clearCart()">🗑️ Vaciar carrito</button>
     <button class="whatsapp-button" onclick="sendWhatsApp()">📱 Confirmar pedido</button>
