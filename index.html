@@ -759,12 +759,12 @@
       <label><input type="radio" name="deliveryOption" value="retiro" checked onchange="toggleAddress()"> 🏪 Retiro por local</label>
       <label><input type="radio" name="deliveryOption" value="envio" onchange="toggleAddress()"> 🚚 Envío a domicilio</label>
       <div id="addressField" style="display:none;">
-        <input type="text" id="deliveryAddress" placeholder="Ingresa tu Nombre Complero">
-        <input type="text" id="deliveryAddress" placeholder="Ingresa tu Dirección Completa">
-        <input type="text" id="deliveryAddress" placeholder="Ingresa Entre Calles">
-        <input type="text" id="deliveryAddress" placeholder="Ingresa tu Numero De Telefono">
-        <input type="text" id="deliveryAddress" placeholder="Ingresa el Metodo de Pago">
-      </div>
+  <input type="text" id="customerName" placeholder="Ingresa tu Nombre Completo">
+  <input type="text" id="customerAddress" placeholder="Ingresa tu Dirección Completa">
+  <input type="text" id="customerStreets" placeholder="Ingresa Entre Calles">
+  <input type="text" id="customerPhone" placeholder="Ingresa tu Número de Teléfono">
+  <input type="text" id="customerPayment" placeholder="Ingresa el Método de Pago">
+</div>
     </div>
 
     <button class="clear-cart-button" onclick="clearCart()">🗑️ Vaciar carrito</button>
@@ -954,33 +954,46 @@
   }
 
   // WhatsApp
-  function sendWhatsApp() {
-    if (cart.length === 0) {
-      alert('Tu carrito está vacío.');
+ function sendWhatsApp() {
+  if (cart.length === 0) {
+    alert('Tu carrito está vacío.');
+    return;
+  }
+
+  const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+  let addressText = '';
+
+  if (deliveryOption === 'envio') {
+    const name = document.getElementById('customerName').value.trim();
+    const address = document.getElementById('customerAddress').value.trim();
+    const streets = document.getElementById('customerStreets').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
+    const payment = document.getElementById('customerPayment').value.trim();
+
+    if (!name || !address || !streets || !phone || !payment) {
+      alert('Por favor, completa todos los campos de envío antes de confirmar el pedido.');
       return;
     }
 
-    const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
-    let addressText = '';
-    if (deliveryOption === 'envio') {
-      const address = document.getElementById('deliveryAddress').value.trim();
-      if (!address) {
-        alert('Ingresa tu dirección de entrega.');
-        return;
-      }
-      addressText = `\nDirección: ${address}`;
-    }
-
-    let message = 'Hola! Quiero hacer el siguiente pedido:\n\n';
-    cart.forEach(item => {
-      message += `${item.quantity} x ${item.name} - $${item.price * item.quantity}\n`;
-    });
-    message += `\nTotal: $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}`;
-    message += `\nOpción: ${deliveryOption === 'retiro' ? 'Retiro por local' : 'Envío a domicilio'}${addressText}`;
-
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/5493541294944?text=${encodedMessage}`, '_blank');
+    addressText = 
+      `\n\n📦 *Datos de envío:*` +
+      `\n👤 Nombre: ${name}` +
+      `\n🏠 Dirección: ${address}` +
+      `\n🚏 Entre calles: ${streets}` +
+      `\n📞 Teléfono: ${phone}` +
+      `\n💳 Método de pago: ${payment}`;
   }
+
+  let message = '🍽️ *Nuevo pedido desde la web:*\n\n';
+  cart.forEach(item => {
+    message += `${item.quantity} x ${item.name} - $${item.price * item.quantity}\n`;
+  });
+  message += `\n💰 *Total:* $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}`;
+  message += `\n📍 *Opción:* ${deliveryOption === 'retiro' ? 'Retiro por local' : 'Envío a domicilio'}${addressText}`;
+
+  const encodedMessage = encodeURIComponent(message);
+  window.open(`https://wa.me/5493541294944?text=${encodedMessage}`, '_blank');
+}
 
   // Inicialización
   renderProducts();
