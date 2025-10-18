@@ -984,12 +984,12 @@
       `\n Método de pago: ${payment}`;
   }
 
-  let message = '🍽️ *Nuevo pedido desde la web:*\n\n';
+  let message = ' *Nuevo pedido desde la web:*\n\n';
   cart.forEach(item => {
     message += `${item.quantity} x ${item.name} - $${item.price * item.quantity}\n`;
   });
-  message += `\n💰 *Total:* $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}`;
-  message += `\n📍 *Opción:* ${deliveryOption === 'retiro' ? 'Retiro por local' : 'Envío a domicilio'}${addressText}`;
+  message += `\n *Total:* $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}`;
+  message += `\n *Opción:* ${deliveryOption === 'retiro' ? 'Retiro por local' : 'Envío a domicilio'}${addressText}`;
 
   const encodedMessage = encodeURIComponent(message);
   window.open(`https://wa.me/5493541294944?text=${encodedMessage}`, '_blank');
